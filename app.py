@@ -13,6 +13,8 @@ if url:
     video_id = url.split("/")[-1]
 else:
     video_id = url.split("v=")[-1]
+
+
     transcript = YouTubeTranscriptApi.get_transcript(video_id)
     text = " ".join([i['text'] for i in transcript])
 
