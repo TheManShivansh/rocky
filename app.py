@@ -9,6 +9,9 @@ url = st.text_input("Enter YouTube URL")
 client = Groq(api_key=st.secrets["API_KEY"])
 
 if url:
+    if "youtu.be" in url:
+    video_id = url.split("/")[-1]
+else:
     video_id = url.split("v=")[-1]
     transcript = YouTubeTranscriptApi.get_transcript(video_id)
     text = " ".join([i['text'] for i in transcript])
