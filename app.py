@@ -20,7 +20,7 @@ if url:
                 URL: {url}
                 """
             }],
-            model="mixtral-8x7b-32768"
+            model="llama-3.1-8b-instant"
         )
 
         st.subheader("Summary")
