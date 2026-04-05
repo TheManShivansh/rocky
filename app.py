@@ -9,7 +9,7 @@ client = Groq(api_key=st.secrets["API_KEY"])
 
 if url:
     try:
-        prompt = f"You are given a YouTube video link.
+        prompt = f"""You are given a YouTube video link.
 
 Do NOT say you can't access it.
 
@@ -33,7 +33,7 @@ Action Steps:
 
 Video URL:
 {url}
-"
+"""
 
         response = client.chat.completions.create(
             messages=[
