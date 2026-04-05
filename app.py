@@ -1,48 +1,63 @@
 import streamlit as st
+from youtube_transcript_api import YouTubeTranscriptApi
 from groq import Groq
 
+# UI
 st.title("YouTube Summary")
-
 url = st.text_input("Enter YouTube URL")
 
+# Groq client
 client = Groq(api_key=st.secrets["API_KEY"])
 
-if url:
+
+# ----------- FUNCTION TO GET VIDEO ID -----------
+def get_video_id(url):
+    if "youtu.be" in url:
+        return url.split("/")[-1]
+    elif "v=" in url:
+        return url.split("v=")[-1].split("&")[0]
+    return None
+
+
+# ----------- FUNCTION TO GET TRANSCRIPT -----------
+def get_transcript(video_id):
     try:
-        response = client.chat.completions.create(
-            messages=[{
-                "role": "user",
-                "content": f"""
-                Analyze this YouTube video and give:
-                1. 5 key points
-                2. Actionable insights
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        text = " ".join([i["text"] for i in transcript])
+        return text
+    except:
+        return None
 
-                URL: {url}
-                """
-            }],
-            model="llama-3.1-8b-instant"
-        )
 
-        st.subheader("Summary")
-        st.write(response.choices[0].message.content)
+# ----------- MAIN LOGIC -----------
+if url:
+    video_id = get_video_id(url)
 
-    except Exception as e:
-        st.error(f"Error: {str(e)}")        
-        text = None
-
-    if text:
-     st.write("Transcript (short):")
-     st.write(text[:1000])
+    if not video_id:
+        st.error("Invalid YouTube URL")
     else:
-     st.error("Transcript not available")
+        text = get_transcript(video_id)
 
-    response = client.chat.completions.create(
-        messages=[{
-            "role": "user",
-            "content": f"Summarize in 5 key points and action items:\n{text[:4000]}"
-        }],
-        model="llama3-70b-8192"
-    )
+        if text:
+            # Show transcript
+            st.subheader("Transcript (short)")
+            st.write(text[:1000])
 
-    st.subheader("Summary")
-    st.write(response.choices[0].message.content)
+            # Generate summary
+            try:
+                response = client.chat.completions.create(
+                    messages=[{
+                        "role": "user",
+                        "content": f"Summarize this transcript in 5 key points:\n{text}"
+                    }],
+                    model="llama-3.1-8b-instant"
+                )
+
+                st.subheader("Summary")
+                st.write(response.choices[0].message.content)
+
+            except Exception as e:
+                st.error(f"Summary error: {str(e)}")
+
+        else:
+            st.error("Transcript not available for this video")
