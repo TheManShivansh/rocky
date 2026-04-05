@@ -15,7 +15,7 @@ if url:
         video_id = url.split("v=")[-1]
 
 
-    YouTubeTranscriptApi().get_transcript(video_id)
+    YouTubeTranscriptApi.get_transcript(video_id)
     text = " ".join([i['text'] for i in transcript])
 
     st.write("Transcript (short):")
