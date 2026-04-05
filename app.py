@@ -33,7 +33,7 @@ Action Steps:
 
 Video URL:
 {url}
-"""
+"
 
         response = client.chat.completions.create(
             messages=[
