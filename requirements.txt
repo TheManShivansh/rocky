@@ -2,3 +2,4 @@ streamlit
 langchain
 groq
 requests
+youtube-transscript-api
