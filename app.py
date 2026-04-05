@@ -1,5 +1,4 @@
 import streamlit as st
-import requests
 from groq import Groq
 
 st.title("YouTube Summary")
@@ -8,33 +7,27 @@ url = st.text_input("Enter YouTube URL")
 
 client = Groq(api_key=st.secrets["API_KEY"])
 
-def get_video_id(url):
-    if "youtu.be" in url:
-        return url.split("/")[-1]
-    elif "v=" in url:
-        return url.split("v=")[-1]
-    return None
-
-def get_transcript(video_id):
-    api = f"https://youtubetranscript.com/?server_vid2={video_id}"
-    r = requests.get(api)
-    if r.status_code != 200:
-        return None
-    data = r.json()
-    text = " ".join([i['text'] for i in data])
-    return text
-
 if url:
-    video_id = get_video_id(url)
+    try:
+        response = client.chat.completions.create(
+            messages=[{
+                "role": "user",
+                "content": f"""
+                Analyze this YouTube video and give:
+                1. 5 key points
+                2. Actionable insights
 
-    if not video_id:
-        st.error("Invalid URL")
-        st.stop()
+                URL: {url}
+                """
+            }],
+            model="llama3-70b-8192"
+        )
 
-    text = get_transcript(video_id)
+        st.subheader("Summary")
+        st.write(response.choices[0].message.content)
 
-    if not text:
-        st.error("Transcript not available")
+    except Exception as e:
+        st.error(f"Error: {str(e)}")        st.error("Transcript not available")
         st.stop()
 
     st.subheader("Transcript (short)")
