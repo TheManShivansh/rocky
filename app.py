@@ -28,11 +28,13 @@ if url:
 
     except Exception as e:
         st.error(f"Error: {str(e)}")        
-        st.error("Transcript not available")
-        st.stop()
+        text = None
 
-    st.subheader("Transcript (short)")
-    st.write(text[:1000])
+    if text:
+     st.write("Transcript (short):")
+     st.write(text[:1000])
+    else:
+     st.error("Transcript not available")
 
     response = client.chat.completions.create(
         messages=[{
