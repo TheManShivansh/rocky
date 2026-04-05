@@ -25,7 +25,8 @@ if url:
         st.write(response.choices[0].message.content)
 
     except Exception as e:
-        st.error(f"Error: {str(e)}")        st.error("Invalid YouTube URL")
+        st.error(f"Error: {str(e)}")        
+        st.error("Invalid YouTube URL")
     else:
         text = get_transcript(video_id)
 
