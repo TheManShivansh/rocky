@@ -27,7 +27,8 @@ if url:
         st.write(response.choices[0].message.content)
 
     except Exception as e:
-        st.error(f"Error: {str(e)}")        st.error("Transcript not available")
+        st.error(f"Error: {str(e)}")        
+        st.error("Transcript not available")
         st.stop()
 
     st.subheader("Transcript (short)")
