@@ -1,4 +1,4 @@
 streamlit
 requests
 youtube-transcript-api
-grok
+groq
