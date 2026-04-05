@@ -11,7 +11,7 @@ client = Groq(api_key=st.secrets["API_KEY"])
 if url:
     if "youtu.be" in url:
     video_id = url.split("/")[-1]
-else:
+ else:
     video_id = url.split("v=")[-1]
 
 
